@@ -24,6 +24,9 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "app",
+    # Celery helper apps
+    "django_celery_beat",
+    "django_celery_results",
 ]
 
 # ── Middleware ────────────────────────────────────────────────────────────────

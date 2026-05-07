@@ -37,7 +37,7 @@ services:
     entrypoint: ["/bin/sh", "/app/entrypoint.sh"]
     command: gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 120
     volumes:
-      - .:/app
+      - ./server:/app
       - static_volume:/app/staticfiles
     ports:
       - "8000:8000"
@@ -56,7 +56,7 @@ services:
     restart: unless-stopped
     command: celery -A config worker --loglevel=info --concurrency=4 -Q celery
     volumes:
-      - .:/app
+      - ./server:/app
     env_file: .env
     environment:
       DJANGO_SETTINGS_MODULE: config.settings
@@ -72,7 +72,7 @@ services:
     restart: unless-stopped
     command: celery -A config beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
     volumes:
-      - .:/app
+      - ./server:/app
     env_file: .env
     environment:
       DJANGO_SETTINGS_MODULE: config.settings

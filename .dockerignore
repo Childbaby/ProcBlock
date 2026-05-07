@@ -1,0 +1,39 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtualenvs
+venv/
+env/
+.venv/
+
+# dotenv
+.env
+.env.*
+
+# Build / distribution
+build/
+dist/
+*.egg-info/
+
+# Database
+*.sqlite3
+
+# Django static / media
+staticfiles/
+media/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/
+client/node_modules/
+client/.next/
+
+# Docker
+docker-compose.override.yml
