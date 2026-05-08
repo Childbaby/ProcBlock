@@ -1,0 +1,194 @@
+/*
+ * VaxChain — Django Admin Custom CSS (Refined)
+ * Theme: Clean / Professional (Muted Blues, Greys)
+ * File: server/app/static/admin/css/custom.css
+ */
+
+/* ── Google Fonts ─────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+/* ── Design Tokens ────────────────────────────────────────────────────────── */
+:root {
+  --primary:        #1F4B8B;   /* deep professional blue */
+  --primary-dark:   #15365A;   /* darker blue */
+  --primary-light:  #EAF3FF;   /* very light blue */
+  --primary-mid:    #D7E8FF;
+  --accent:         #06B6D4;   /* teal accent */
+  --success:        #16A34A;
+  --warning:        #D97706;
+  --danger:         #DC2626;
+
+  --bg:             #F6F8FA;   /* soft off-white */
+  --surface:        #FFFFFF;
+  --surface-raised: #F4F7FA;   /* subtle raised surface */
+  --border:         #E6EEF8;   /* very pale blue-gray */
+  --border-strong:  #CBD5E1;
+
+  --text-primary:   #0B1220;   /* near-black for primary text */
+  --text-secondary: #475569;   /* supporting text */
+  --text-muted:     #94A3B8;
+
+  --sidebar-bg:     #0F2338;   /* deep navy for sidebar */
+  --sidebar-hover:  #13314d;
+  --sidebar-active: #1F4B8B;
+  --sidebar-text:   #BFD7F5;
+  --sidebar-head:   #FFFFFF;
+
+  --radius:         8px;
+  --radius-sm:      6px;
+  --radius-lg:      10px;
+  --shadow-sm:      0 2px 6px rgba(11,18,32,0.06);
+  --shadow:         0 6px 16px rgba(11,18,32,0.06);
+  --shadow-md:      0 12px 24px rgba(11,18,32,0.08);
+  --font:           'DM Sans', system-ui, sans-serif;
+  --mono:           'DM Mono', monospace;
+}
+
+/* ── Reset / Base ─────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  font-family: var(--font) !important;
+  background: var(--bg) !important;
+  color: var(--text-primary) !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Header ───────────────────────────────────────────────────────────────── */
+#header {
+  background: var(--surface) !important;
+  border-bottom: 1px solid var(--border) !important;
+  padding: 0 28px !important;
+  height: 56px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  box-shadow: var(--shadow-sm) !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100 !important;
+}
+
+#branding h1 {
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.2px !important;
+  color: var(--primary) !important;
+  margin: 0 !important;
+}
+
+#branding h1 a {
+  color: var(--primary) !important;
+  text-decoration: none !important;
+}
+
+/* remove decorative emoji — keep branding clean */
+#branding h1 a:before { content: none !important; }
+
+/* Header user tools */
+#user-tools { font-size: 13px !important; color: var(--text-secondary) !important; }
+#user-tools a { color: var(--primary) !important; text-decoration: none !important; padding: 6px 10px !important; border-radius: var(--radius-sm) !important; transition: background 0.12s ease !important; }
+#user-tools a:hover { background: var(--primary-light) !important; }
+
+/* ── Navigation / Sidebar ─────────────────────────────────────────────────── */
+#nav-sidebar, .sticky { background: var(--sidebar-bg) !important; border-right: none !important; min-height: calc(100vh - 56px) !important; }
+
+#nav-sidebar .module caption { background: transparent !important; color: var(--sidebar-text) !important; font-size: 11px !important; font-weight: 600 !important; letter-spacing: 1px !important; text-transform: uppercase !important; padding: 18px 14px 6px !important; opacity: 0.7 !important; }
+
+#nav-sidebar a { display:block !important; color:var(--sidebar-text) !important; text-decoration:none !important; padding:10px 16px !important; border-radius:6px !important; margin:6px 8px !important; font-size:13px !important; transition: background .12s ease, color .12s ease !important; }
+#nav-sidebar a:hover { background: var(--sidebar-hover) !important; color: #fff !important; }
+#nav-sidebar a.selected, #nav-sidebar a:focus { background: var(--sidebar-active) !important; color: #fff !important; font-weight:600 !important; }
+
+/* ── Main Content / Layout ────────────────────────────────────────────────── */
+#main, #content, .colMS #content { background: var(--bg) !important; padding: 28px 32px !important; }
+#content-main { background: transparent !important; }
+
+div.breadcrumbs { background: var(--surface) !important; border-bottom: 1px solid var(--border) !important; padding: 12px 24px !important; font-size: 13px !important; color: var(--text-muted) !important; }
+div.breadcrumbs a { color: var(--primary) !important; text-decoration: none !important; }
+
+#content h1 { font-size: 22px !important; font-weight: 600 !important; color: var(--text-primary) !important; margin-bottom: 20px !important; }
+
+/* ── Dashboard Modules ───────────────────────────────────────────────────── */
+#content-main .module { background: var(--surface) !important; border: 1px solid var(--border) !important; border-radius: var(--radius-lg) !important; box-shadow: var(--shadow-sm) !important; overflow: hidden !important; margin-bottom: 20px !important; }
+#content-main .module:hover { box-shadow: var(--shadow-md) !important; }
+#content-main .module caption { background: var(--primary) !important; color:#fff !important; padding:12px 18px !important; font-weight:600 !important; }
+
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
+.button, input[type=submit], input[type=button], .submit-row input, a.button {
+  background: var(--primary) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: var(--radius-sm) !important;
+  padding: 10px 18px !important;
+  font-family: var(--font) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: background .12s ease, transform .08s ease !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+.button:hover, input[type=submit]:hover, input[type=button]:hover, .submit-row input:hover { background: var(--primary-dark) !important; transform: translateY(-1px) !important; box-shadow: var(--shadow) !important; }
+.deletelink, a.deletelink { background: var(--danger) !important; color: #fff !important; padding: 6px 14px !important; border-radius: var(--radius-sm) !important; }
+
+/* ── Forms ────────────────────────────────────────────────────────────────── */
+.form-row { padding: 14px 20px !important; border-bottom: 1px solid var(--border) !important; }
+input[type=text], input[type=password], input[type=email], input[type=url], input[type=number], textarea, select {
+  border: 1px solid var(--border-strong) !important;
+  border-radius: var(--radius-sm) !important;
+  padding: 9px 12px !important;
+  font-family: var(--font) !important;
+  font-size: 13px !important;
+  color: var(--text-primary) !important;
+  background: var(--surface) !important;
+  transition: border-color .12s ease, box-shadow .12s ease !important;
+}
+input[type=text]:focus, input[type=password]:focus, input[type=email]:focus, textarea:focus, select:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 4px rgba(31,75,139,0.10) !important;
+  outline: none !important;
+}
+label { font-weight: 500 !important; color: var(--text-secondary) !important; }
+
+/* ── Change List / Tables ─────────────────────────────────────────────────── */
+#changelist { background: var(--surface) !important; border: 1px solid var(--border) !important; border-radius: var(--radius-lg) !important; box-shadow: var(--shadow-sm) !important; overflow:hidden !important; }
+#changelist table { width:100% !important; border-collapse: collapse !important; }
+#changelist table thead th { background: var(--surface-raised) !important; color: var(--text-secondary) !important; font-size:11px !important; font-weight:600 !important; text-transform:uppercase !important; padding:12px 16px !important; border-bottom:1px solid var(--border) !important; }
+#changelist table tbody td { padding:12px 16px !important; border-bottom:1px solid var(--border) !important; color: var(--text-primary) !important; }
+#changelist table tbody tr:hover { background: var(--primary-light) !important; }
+#changelist table tbody tr:nth-child(even) { background:#FAFBFD !important; }
+
+/* ── Search / Filters ─────────────────────────────────────────────────────── */
+#searchbar { border:1px solid var(--border-strong) !important; border-radius: var(--radius-sm) !important; padding:8px 14px !important; width:280px !important; }
+#changelist-filter { background:var(--surface) !important; border:1px solid var(--border) !important; border-radius: var(--radius-lg) !important; padding:0 !important; }
+
+/* ── Messages / Alerts ────────────────────────────────────────────────────── */
+ul.messagelist { margin:0 0 20px !important; padding:0 !important; list-style:none !important; }
+ul.messagelist li { padding:12px 20px !important; border-radius:var(--radius) !important; font-weight:600 !important; margin-bottom:8px !important; border-left:4px solid !important; }
+ul.messagelist li.success { background:#F0FDF4 !important; color:#166534 !important; border-color:var(--success) !important; }
+ul.messagelist li.warning { background:#FFFBEB !important; color:#92400E !important; border-color:var(--warning) !important; }
+ul.messagelist li.error { background:#FEF2F2 !important; color:#991B1B !important; border-color:var(--danger) !important; }
+
+/* ── Submit row / Pagination / Recent actions ─────────────────────────────── */
+.submit-row { background: var(--surface-raised) !important; border-top:1px solid var(--border) !important; padding:14px 20px !important; display:flex !important; gap:8px !important; align-items:center !important; }
+.paginator { background:var(--surface) !important; border-top:1px solid var(--border) !important; padding:12px 16px !important; }
+.paginator a { color:var(--primary) !important; padding:4px 10px !important; border:1px solid var(--border) !important; margin:0 2px !important; border-radius:4px !important; }
+#recent-actions-module { background:var(--surface) !important; border:1px solid var(--border) !important; border-radius:var(--radius-lg) !important; }
+
+/* ── Login Page ───────────────────────────────────────────────────────────── */
+body.login { background: linear-gradient(135deg,#F6F8FA 0%,#EEF6FF 50%) !important; display:flex !important; align-items:center !important; justify-content:center !important; min-height:100vh !important; }
+body.login #header { display:none !important; }
+body.login #content { background:var(--surface) !important; border:1px solid var(--border) !important; border-radius:var(--radius-lg) !important; box-shadow:var(--shadow-md) !important; padding:36px !important; width:380px !important; }
+body.login h1 { text-align:center !important; color:var(--primary) !important; font-size:20px !important; margin-bottom:20px !important; }
+
+/* ── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width:767px) {
+  #header { padding:0 16px !important; }
+  #main, #content { padding:16px !important; }
+  #changelist table thead { display:none !important; }
+  #changelist table tbody td { display:block !important; border-bottom:none !important; padding:8px 16px !important; }
+  #changelist table tbody tr { border-bottom:1px solid var(--border) !important; }
+}

@@ -14,7 +14,24 @@ DEBUG = os.environ.get("DEBUG", "False") == "True"
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 # ── Application registry ─────────────────────────────────────────────────────
+JAZZMIN_SETTINGS = {
+    "site_title": "VaxChain Admin",
+    "site_header": "VaxChain Zambia",
+    "site_brand": "VaxChain",
+    "welcome_sign": "VaxChain Supply Chain Management",
+    "theme": "darkly",
+    "dark_mode_theme": "darkly",
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "app.medicine": "fas fa-pills",
+        "app.auditEvent": "fas fa-clipboard-list",
+    },
+    "custom_css": "admin/css/custom.css",
+    "show_ui_builder": False,
+}
+
 INSTALLED_APPS = [
+    "jazzmin",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -32,6 +49,7 @@ INSTALLED_APPS = [
 # ── Middleware ────────────────────────────────────────────────────────────────
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     # ↓  PII firewall – runs before any view sees the request body
     "middleware.privacy.PIISanitizationMiddleware",
@@ -111,6 +129,7 @@ CELERY_WORKER_PREFETCH_MULTIPLIER = 1 # prevent hoarding during poor connectivit
 # ── Static files ──────────────────────────────────────────────────────────────
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # ── Solana bridge – read-only config (keys stay in env) ───────────────────────
 SOLANA_RPC_URL = os.environ.get("SOLANA_RPC_URL", "https://api.devnet.solana.com")
