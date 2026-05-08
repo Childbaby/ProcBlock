@@ -113,6 +113,10 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 SOLANA_RPC_URL = os.environ.get("SOLANA_RPC_URL", "https://api.devnet.solana.com")
 SOLANA_PROGRAM_ID = os.environ.get("SOLANA_PROGRAM_ID", "")
 SOLANA_PAYER_KEYPAIR_PATH = os.environ.get("SOLANA_PAYER_KEYPAIR_PATH", "")
+SOLANA_BRIDGE_MODE = os.environ.get("SOLANA_BRIDGE_MODE", "anchor")
+SOLANA_HUB_CODE = os.environ.get("SOLANA_HUB_CODE", "")
+SOLANA_MEDICINE_CODE_PREFIX = os.environ.get("SOLANA_MEDICINE_CODE_PREFIX", "MED")
+SOLANA_ALLOW_MEMO_FALLBACK = os.environ.get("SOLANA_ALLOW_MEMO_FALLBACK", "True") == "True"
 
 # ── Internationalisation ──────────────────────────────────────────────────────
 LANGUAGE_CODE = "en-us"

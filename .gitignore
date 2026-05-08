@@ -6,3 +6,9 @@ node_modules/
 staticfiles/
 *.log
 *.sqlite3
+target/
+.anchor/
+test-ledger/
+*.so
+*.dylib
+*.json.bak

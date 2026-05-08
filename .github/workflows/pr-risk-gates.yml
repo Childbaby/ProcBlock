@@ -1,0 +1,48 @@
+name: PR Risk Gates
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  enforce-high-risk-gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Enforce high-risk approval tokens
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          set -euo pipefail
+
+          CHANGED_FILES="$(git diff --name-only "$BASE_SHA" "$HEAD_SHA")"
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+
+          HIGH_RISK_REGEX='^(onchain/programs/vaxchain_trust_layer/src/.*\.rs|onchain/target/idl/vaxchain_trust_layer\.json)$'
+
+          if echo "$CHANGED_FILES" | grep -E "$HIGH_RISK_REGEX" > /dev/null; then
+            echo "High-risk files detected. Validating approval markers in PR body."
+
+            if ! echo "$PR_BODY" | grep -q 'HIGH_RISK_APPROVED: YES'; then
+              echo "Missing required marker: HIGH_RISK_APPROVED: YES"
+              exit 1
+            fi
+
+            if ! echo "$PR_BODY" | grep -q 'SECURITY_REVIEW_APPROVED: YES'; then
+              echo "Missing required marker: SECURITY_REVIEW_APPROVED: YES"
+              exit 1
+            fi
+
+            echo "High-risk approval markers present."
+          else
+            echo "No high-risk files changed."
+          fi
