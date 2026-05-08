@@ -1,0 +1,168 @@
+name: Onchain Safety Gate
+
+on:
+  pull_request:
+    paths:
+      - "onchain/**"
+      - ".github/workflows/onchain-safety-gate.yml"
+  workflow_dispatch:
+    inputs:
+      rpc_port:
+        description: "RPC port for local validator dry-run"
+        required: false
+        default: "8899"
+      faucet_port:
+        description: "Faucet port for local validator dry-run"
+        required: false
+        default: "9900"
+      hub_code:
+        description: "Hub code used by dry-run"
+        required: false
+        default: "ZMHUB001"
+
+jobs:
+  safety-gate:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: "onchain/package-lock.json"
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            onchain/target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('onchain/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      - name: Install Solana CLI and SBF tools
+        run: |
+          sh -c "$(curl -sSfL https://release.anza.xyz/v1.18.26/install)"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
+          export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+          solana --version
+          cargo-build-sbf --version
+
+      - name: Install Anchor CLI via AVM
+        run: |
+          cargo install --git https://github.com/coral-xyz/anchor avm --locked --force
+          echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
+          export PATH="$HOME/.cargo/bin:$PATH"
+          avm install 0.30.1
+          avm use 0.30.1
+          echo "$HOME/.avm/bin" >> "$GITHUB_PATH"
+          export PATH="$HOME/.avm/bin:$PATH"
+          anchor --version
+
+      - name: Install onchain npm deps
+        working-directory: onchain
+        run: npm ci
+
+      - name: Run onchain safety gate (no runtime tests)
+        working-directory: onchain
+        shell: pwsh
+        run: ./scripts/safety-gate.ps1 -SkipRuntimeTests
+
+  manual-anchor-dry-run:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: "onchain/package-lock.json"
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            onchain/target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('onchain/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      - name: Install Solana CLI and SBF tools
+        run: |
+          sh -c "$(curl -sSfL https://release.anza.xyz/v1.18.26/install)"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
+          export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+          solana --version
+          cargo-build-sbf --version
+
+      - name: Install Anchor CLI via AVM
+        run: |
+          cargo install --git https://github.com/coral-xyz/anchor avm --locked --force
+          echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
+          export PATH="$HOME/.cargo/bin:$PATH"
+          avm install 0.30.1
+          avm use 0.30.1
+          echo "$HOME/.avm/bin" >> "$GITHUB_PATH"
+          export PATH="$HOME/.avm/bin:$PATH"
+          anchor --version
+
+      - name: Install onchain npm deps
+        working-directory: onchain
+        run: npm ci
+
+      - name: Build Anchor program artifact
+        working-directory: onchain
+        shell: pwsh
+        run: anchor build
+
+      - name: Install Python dry-run dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install solana==0.34.3 solders==0.21.0
+
+      - name: Generate local Solana keypair
+        run: |
+          mkdir -p "$HOME/.config/solana"
+          solana-keygen new --no-bip39-passphrase -s -f -o "$HOME/.config/solana/id.json"
+
+      - name: Run manual Anchor dry-run lane
+        working-directory: onchain
+        shell: pwsh
+        env:
+          RPC_PORT: ${{ github.event.inputs.rpc_port || '8899' }}
+          FAUCET_PORT: ${{ github.event.inputs.faucet_port || '9900' }}
+          HUB_CODE: ${{ github.event.inputs.hub_code || 'ZMHUB001' }}
+        run: |
+          ./scripts/run-anchor-dry-run.ps1 `
+            -RpcUrl "http://127.0.0.1:$env:RPC_PORT" `
+            -RpcPort ([int]$env:RPC_PORT) `
+            -FaucetPort ([int]$env:FAUCET_PORT) `
+            -HubCode $env:HUB_CODE `
+            -PythonExecutable "$env:pythonLocation/bin/python"
