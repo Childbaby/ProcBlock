@@ -1,0 +1,23 @@
+[
+  {
+    "model": "app.medicinerecord",
+    "pk": 1,
+    "fields": {
+      "drug_name": "Artemether-Lumefantrine",
+      "batch_number": "B2025-0041",
+      "atc_code": "P01BA",
+      "quantity": 500,
+      "unit_of_measure": "tablets",
+      "facility_code": "FAC-202605-0001",
+      "district_code": "NDL",
+      "expiry_date": "2027-06-30",
+      "received_date": "2026-05-08",
+      "created_at": "2026-05-08T12:00:00Z",
+      "updated_at": "2026-05-08T12:00:00Z",
+      "document_hash": "abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd",
+      "on_chain_signature": "",
+      "is_synced": false,
+      "stock_status": "ADEQUATE"
+    }
+  }
+]

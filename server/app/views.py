@@ -1,5 +1,5 @@
 """
-MedChain – API Views
+ProcBase – API Views
 """
 import logging
 
@@ -20,7 +20,7 @@ from .serializers import (
 )
 from .tasks import sync_record_to_blockchain
 
-logger = logging.getLogger("medchain.views")
+logger = logging.getLogger("procbase.views")
 
 
 class MedicineViewSet(viewsets.ModelViewSet):

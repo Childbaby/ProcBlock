@@ -1,6 +1,14 @@
 {% extends "admin/base.html" %}
 {% load static %}
 
+{% block title %}ProcBase Admin{% endblock %}
+
+{% block branding %}
+  <div id="branding">
+    <h1><a href="{% url 'admin:index' %}">ProcBase</a></h1>
+  </div>
+{% endblock %}
+
 {# Override extra head to include our custom admin CSS #}
 {% block extrahead %}
   {{ block.super }}

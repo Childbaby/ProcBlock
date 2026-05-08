@@ -1,4 +1,4 @@
-# ProcBlock — MedChain Prototype
+# ProcBlock — ProcBase Prototype
 
 This repository contains a Django backend and Next.js frontend for a procurement-to-blockchain prototype.
 

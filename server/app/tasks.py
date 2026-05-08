@@ -1,5 +1,5 @@
 """
-MedChain – Celery Tasks
+ProcBase – Celery Tasks
 ========================
 NFR-03 Burst Sync: tasks queue blockchain writes and flush them
 when connectivity is restored, with exponential back-off.
@@ -10,7 +10,7 @@ from datetime import timedelta
 from celery import shared_task
 from django.utils import timezone
 
-logger = logging.getLogger("medchain.tasks")
+logger = logging.getLogger("procbase.tasks")
 
 
 # ── Blockchain sync ───────────────────────────────────────────────────────────

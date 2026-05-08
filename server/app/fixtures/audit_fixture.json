@@ -1,0 +1,102 @@
+[
+  {
+    "model": "app.auditevent",
+    "pk": 1,
+    "fields": {
+      "event_type": "RECORD_CREATED",
+      "medicine_batch": "B2025-0041",
+      "detail": {"notes": "Imported via fixture", "user": "fixture"},
+      "timestamp": "2026-05-08T12:05:00Z"
+    }
+  },
+  {
+    "model": "app.auditevent",
+    "pk": 2,
+    "fields": {
+      "event_type": "RECORD_CREATED",
+      "medicine_batch": "B2025-0042",
+      "detail": {"notes": "Imported via fixture", "user": "fixture"},
+      "timestamp": "2026-05-08T12:06:00Z"
+    }
+  },
+  {
+    "model": "app.auditevent",
+    "pk": 3,
+    "fields": {
+      "event_type": "RECORD_CREATED",
+      "medicine_batch": "B2025-0043",
+      "detail": {"notes": "Imported via fixture", "user": "fixture"},
+      "timestamp": "2026-05-08T12:07:00Z"
+    }
+  },
+  {
+    "model": "app.auditevent",
+    "pk": 4,
+    "fields": {
+      "event_type": "SYNC_QUEUED",
+      "medicine_batch": "B2025-0041",
+      "detail": {"queue": "blockchain_sync"},
+      "timestamp": "2026-05-08T12:10:00Z"
+    }
+  },
+  {
+    "model": "app.auditevent",
+    "pk": 5,
+    "fields": {
+      "event_type": "SYNC_CONFIRMED",
+      "medicine_batch": "B2025-0041",
+      "detail": {"solana_sig": "STUB_abcdef123456"},
+      "timestamp": "2026-05-08T12:15:00Z"
+    }
+  },
+  {
+    "model": "app.auditevent",
+    "pk": 6,
+    "fields": {
+      "event_type": "SYNC_FAILED",
+      "medicine_batch": "B2025-0044",
+      "detail": {"error": "Network timeout"},
+      "timestamp": "2026-05-08T12:12:00Z"
+    }
+  },
+  {
+    "model": "app.auditevent",
+    "pk": 7,
+    "fields": {
+      "event_type": "PII_STRIPPED",
+      "medicine_batch": "",
+      "detail": {"reason": "PII in request body"},
+      "timestamp": "2026-05-08T12:18:00Z"
+    }
+  },
+  {
+    "model": "app.auditevent",
+    "pk": 8,
+    "fields": {
+      "event_type": "RECORD_UPDATED",
+      "medicine_batch": "B2025-0042",
+      "detail": {"field": "quantity", "old": 150, "new": 200},
+      "timestamp": "2026-05-08T12:20:00Z"
+    }
+  },
+  {
+    "model": "app.auditevent",
+    "pk": 9,
+    "fields": {
+      "event_type": "RECORD_UPDATED",
+      "medicine_batch": "B2025-0045",
+      "detail": {"field": "expiry_date", "old": "2027-06-30", "new": "2027-12-31"},
+      "timestamp": "2026-05-08T12:22:00Z"
+    }
+  },
+  {
+    "model": "app.auditevent",
+    "pk": 10,
+    "fields": {
+      "event_type": "RECORD_CREATED",
+      "medicine_batch": "B2025-0046",
+      "detail": {"notes": "Imported via fixture", "user": "fixture"},
+      "timestamp": "2026-05-08T12:25:00Z"
+    }
+  }
+]

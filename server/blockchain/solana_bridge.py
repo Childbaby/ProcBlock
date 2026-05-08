@@ -1,5 +1,5 @@
 """
-MedChain – Solana Bridge
+ProcBase – Solana Bridge
 =========================
 Handles all communication with the Solana blockchain.
 
@@ -8,11 +8,11 @@ Responsibilities
 * Submit a SHA-256 document hash as a memo transaction on Solana.
 * Confirm a submitted transaction signature.
 * Provide a safe no-op stub when Solana credentials are not configured
-  (for local development / CI without a funded keypair).
+    (for local development / CI without a funded keypair).
 
 Dependencies
 ------------
-    pip install solana solders
+        pip install solana solders
 """
 from __future__ import annotations
 
@@ -22,7 +22,7 @@ import os
 from pathlib import Path
 from typing import Optional
 
-logger = logging.getLogger("medchain.solana")
+logger = logging.getLogger("procbase.solana")
 
 # ── Optional import guard ─────────────────────────────────────────────────────
 # solana-py is optional in environments that don't need live blockchain access.

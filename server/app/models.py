@@ -1,5 +1,5 @@
 """
-MedChain – Data Models
+ProcBase – Data Models
 ======================
 Design constraints
 ------------------

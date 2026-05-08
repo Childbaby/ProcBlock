@@ -1,5 +1,5 @@
 """
-MedChain – Django Settings
+ProcBase – Django Settings
 All secrets are read from environment variables.
 No credentials are hardcoded.
 """
@@ -15,10 +15,10 @@ ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(","
 
 # ── Application registry ─────────────────────────────────────────────────────
 JAZZMIN_SETTINGS = {
-    "site_title": "VaxChain Admin",
-    "site_header": "VaxChain Zambia",
-    "site_brand": "VaxChain",
-    "welcome_sign": "VaxChain Supply Chain Management",
+    "site_title": "ProcBase Admin",
+    "site_header": "ProcBase Zambia",
+    "site_brand": "ProcBase",
+    "welcome_sign": "ProcBase Supply Chain Management",
     "theme": "darkly",
     "dark_mode_theme": "darkly",
     "icons": {
@@ -83,7 +83,7 @@ TEMPLATES = [
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("DB_NAME", "medchain"),
+        "NAME": os.environ.get("DB_NAME", "procbase"),
         "USER": os.environ.get("DB_USER", "postgres"),
         "PASSWORD": os.environ["DB_PASSWORD"],
         "HOST": os.environ.get("DB_HOST", "db"),

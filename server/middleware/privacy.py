@@ -1,5 +1,5 @@
 """
-MedChain – PII Sanitization Middleware
+ProcBase – PII Sanitization Middleware
 =======================================
 Runs on EVERY inbound request before any view processes the body.
 
@@ -26,7 +26,7 @@ from typing import Any
 from django.http import HttpRequest, HttpResponse
 from django.utils.deprecation import MiddlewareMixin
 
-logger = logging.getLogger("medchain.privacy")
+logger = logging.getLogger("procbase.privacy")
 
 # ── Compiled patterns ─────────────────────────────────────────────────────────
 

@@ -1,5 +1,5 @@
 """
-MedChain – Cryptography Module
+ProcBase – Cryptography Module
 ================================
 Generates SHA-256 hashes of procurement documents.
 
