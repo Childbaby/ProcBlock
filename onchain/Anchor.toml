@@ -1,0 +1,18 @@
+[provider]
+cluster = "Localnet"
+wallet = "~/.config/solana/id.json"
+
+[programs.localnet]
+vaxchain_trust_layer = "8had5koATJfLWrZ5yMrnSsQ5Ssc5aW4EWNtwrHzb4Prz"
+
+[programs.devnet]
+vaxchain_trust_layer = "8had5koATJfLWrZ5yMrnSsQ5Ssc5aW4EWNtwrHzb4Prz"
+
+[programs.mainnet]
+vaxchain_trust_layer = "8had5koATJfLWrZ5yMrnSsQ5Ssc5aW4EWNtwrHzb4Prz"
+
+[workspace]
+members = ["programs/vaxchain_trust_layer"]
+
+[scripts]
+test = "npx ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
