@@ -68,9 +68,17 @@ jobs:
           export PATH="$HOME/.avm/bin:$PATH"
           anchor --version
 
-      - name: Install onchain npm deps
+      - name: Install onchain npm deps (if manifest exists)
         working-directory: onchain
-        run: npm ci
+        shell: bash
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          elif [ -f package.json ]; then
+            npm install --no-audit --no-fund
+          else
+            echo "No package.json found under onchain; skipping npm dependency install."
+          fi
 
       - name: Run onchain safety gate (no runtime tests)
         working-directory: onchain
@@ -129,9 +137,17 @@ jobs:
           export PATH="$HOME/.avm/bin:$PATH"
           anchor --version
 
-      - name: Install onchain npm deps
+      - name: Install onchain npm deps (if manifest exists)
         working-directory: onchain
-        run: npm ci
+        shell: bash
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          elif [ -f package.json ]; then
+            npm install --no-audit --no-fund
+          else
+            echo "No package.json found under onchain; skipping npm dependency install."
+          fi
 
       - name: Build Anchor program artifact
         working-directory: onchain
