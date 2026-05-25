@@ -51,7 +51,7 @@ def sync_record_to_blockchain(self, medicine_id: int) -> dict:
     bridge = get_bridge()
 
     try:
-        signature = bridge.submit_hash(record.document_hash)
+        signature = bridge.submit_record(record)
         confirmed = bridge.confirm(signature)
 
         if confirmed:
