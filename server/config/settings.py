@@ -126,6 +126,26 @@ CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_ACKS_LATE = True          # tasks survive worker restart
 CELERY_WORKER_PREFETCH_MULTIPLIER = 1 # prevent hoarding during poor connectivity
 
+CELERY_BEAT_SCHEDULE = {
+    "flush-pending-syncs": {
+        "task": "app.tasks.flush_pending_syncs",
+        "schedule": 300,  # every 5 minutes
+    },
+}
+
+# ── Security headers ──────────────────────────────────────────────────────────
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = "DENY"
+# Enable HSTS and SSL redirect in production (controlled by env var)
+if os.environ.get("DJANGO_SECURE", "False") == "True":
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
 # ── Static files ──────────────────────────────────────────────────────────────
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"

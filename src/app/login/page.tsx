@@ -15,17 +15,34 @@ export default function LoginPage() {
     setError(null)
     setIsLoading(true)
 
-    await new Promise((resolve) => setTimeout(resolve, 1800))
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000'
+      const res = await fetch(`${apiUrl}/api/auth/token/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: credentials.username,
+          password: credentials.password,
+        }),
+      })
 
-    if (credentials.username === 'admin' && credentials.password === 'zammsa2024') {
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        setError(
+          (data?.non_field_errors?.[0] as string | undefined) ??
+          'Invalid credentials. Please try again.'
+        )
+        return
+      }
+
+      const { token } = (await res.json()) as { token: string }
+      sessionStorage.setItem('procblock_auth_token', token)
       router.push('/dashboard')
-    } else if (credentials.username === 'field' && credentials.password === 'zammsa2024') {
-      router.push('/scanner')
-    } else {
-      setError('Invalid credentials. Please try again.')
+    } catch {
+      setError('Unable to reach the authentication server. Please try again.')
+    } finally {
+      setIsLoading(false)
     }
-
-    setIsLoading(false)
   }
 
   return (
@@ -142,13 +159,7 @@ export default function LoginPage() {
               <p className="text-xs text-navy-400 text-center">Restricted system. All access is logged and monitored.</p>
             </div>
           </div>
-          <div className="mt-6 p-4 bg-navy-50 border border-navy-200 rounded-medical">
-            <p className="text-xs font-semibold text-navy-600 mb-2">Demo Credentials</p>
-            <div className="space-y-1 text-xs text-navy-500">
-              <p><span className="font-mono text-navy-700">admin</span> / <span className="font-mono text-navy-700">zammsa2024</span> → Dashboard</p>
-              <p><span className="font-mono text-navy-700">field</span> / <span className="font-mono text-navy-700">zammsa2024</span> → Field Scanner</p>
-            </div>
-          </div>
+
         </div>
       </div>
     </div>

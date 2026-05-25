@@ -42,7 +42,23 @@ export async function saveTransferOffline(payload: {
   })
 }
 
-export async function getPendingTransfers(): Promise<any[]> {
+export interface CachedTransfer {
+  id: string
+  type: 'custody_transfer'
+  payload: {
+    cnfId: string
+    fromCustodian: string
+    toCustodian: string
+    location: string
+    commodity: string
+    lotNumber: string
+    timestamp: string
+  }
+  synced: boolean
+  createdAt: string
+}
+
+export async function getPendingTransfers(): Promise<CachedTransfer[]> {
   const db = await openDB()
   return new Promise((resolve, reject) => {
     const tx = db.transaction('transfers', 'readonly')

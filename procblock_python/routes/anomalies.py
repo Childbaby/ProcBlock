@@ -14,8 +14,8 @@ anomalies_bp = Blueprint("anomalies", __name__, url_prefix="/api/anomalies")
 
 
 def _get_db() -> Session:
-    from app import SessionLocal
-    return SessionLocal()
+    from app import get_db
+    return get_db()
 
 
 @anomalies_bp.get("/")

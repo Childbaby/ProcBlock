@@ -27,8 +27,8 @@ STATUS_TRANSITIONS = {
 
 
 def _get_db() -> Session:
-    from app import SessionLocal
-    return SessionLocal()
+    from app import get_db
+    return get_db()
 
 
 def _decrypt_shipment(s: ShipmentVault) -> dict:

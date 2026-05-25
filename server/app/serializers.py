@@ -8,7 +8,32 @@ from crypto.hashing import hash_file
 class MedicineRecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = MedicineRecord
-        fields = '__all__'
+        fields = [
+            'id',
+            'drug_name',
+            'batch_number',
+            'atc_code',
+            'quantity',
+            'unit_of_measure',
+            'facility_code',
+            'district_code',
+            'expiry_date',
+            'received_date',
+            'document_hash',
+            'on_chain_signature',
+            'is_synced',
+            'stock_status',
+            'created_at',
+            'updated_at',
+        ]
+        read_only_fields = [
+            'id',
+            'received_date',
+            'is_synced',
+            'on_chain_signature',
+            'created_at',
+            'updated_at',
+        ]
 
 
 class BlockchainSyncQueueSerializer(serializers.ModelSerializer):

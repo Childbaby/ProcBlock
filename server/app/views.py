@@ -71,7 +71,8 @@ class MedicineViewSet(viewsets.ModelViewSet):
             detail={"updated_fields": list(serializer.validated_data.keys())},
         )
 
-    @action(detail=True, methods=["post"], url_path="retry_sync")
+    @action(detail=True, methods=["post"], url_path="retry_sync",
+            permission_classes=[IsAdminUser])
     def retry_sync(self, request, pk=None):
         """Manually re-queue a failed blockchain sync."""
         record = self.get_object()

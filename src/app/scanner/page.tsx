@@ -45,28 +45,26 @@ export default function ScannerPage() {
     }
   }, [])
 
-  const handleScanError = useCallback((error: string) => {
-    console.error('Scan error:', error)
+  const handleScanError = useCallback((_error: string) => {
+    // Called on every frame where no code is detected — not a real error.
   }, [])
 
-  const handleFileUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
 
-    const reader = new FileDataTransfer()
-    // Use Html5Qrcode to scan uploaded image
-    const { Html5Qrcode } = require('html5-qrcode')
-    const scanner = new Html5Qrcode('file-scan-target')
-    
-    scanner.scanFile(file, true)
-      .then((decodedText: string) => {
-        const parsed = parseGS1DataMatrix(decodedText)
-        if (parsed) {
-          setScanResult(parsed)
-          setTransferStatus('idle')
-        }
-      })
-      .catch((err: any) => console.error('File scan error:', err))
+    try {
+      const { Html5Qrcode } = await import('html5-qrcode')
+      const scanner = new Html5Qrcode('file-scan-target')
+      const decodedText = await scanner.scanFile(file, true)
+      const parsed = parseGS1DataMatrix(decodedText)
+      if (parsed) {
+        setScanResult(parsed)
+        setTransferStatus('idle')
+      }
+    } catch (err) {
+      console.error('File scan error:', err)
+    }
   }, [])
 
   const handleManualSubmit = (e: React.FormEvent) => {

@@ -64,17 +64,24 @@ class GeospatialMapper:
         return hub_stats
 
     def _calculate_stock_level(self, hub_data: pd.DataFrame) -> float:
-        """Calculate stock level as a percentage based on intake vs dispensation."""
-        total_intake = hub_data["quantity"].sum()
+        """Estimate stock level as % of intake not yet dispensed.
 
-        if total_intake == 0:
+        Uses dispensation_timestamp presence as a deterministic proxy:
+        records without a dispensation timestamp are still in stock.
+        Falls back to full-stock (100%) when the column is absent.
+        """
+        total = len(hub_data)
+        if total == 0:
             return 0.0
 
-        # Simulated dispensation rate
-        dispensed = total_intake * np.random.uniform(0.1, 0.9)
-        stock_level = ((total_intake - dispensed) / total_intake) * 100
+        if "dispensation_timestamp" in hub_data.columns:
+            dispensed_count = int(hub_data["dispensation_timestamp"].notna().sum())
+        else:
+            # No dispensation column — conservatively treat as all in-stock
+            dispensed_count = 0
 
-        return max(0.0, min(100.0, stock_level))
+        remaining_ratio = (total - dispensed_count) / total
+        return round(max(0.0, min(100.0, remaining_ratio * 100)), 1)
 
     def get_flow_data(self, df: pd.DataFrame) -> List[Dict[str, Any]]:
         """Generate supply flow data between hubs."""

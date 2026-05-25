@@ -43,7 +43,10 @@ class SupplyChainAnomalyDetector:
                     "id": f"anom-{idx}",
                     "type": "stockout" if severity == "high" else "custody",
                     "severity": severity,
-                    "message": f"Anomaly: {row.get("commodity", "Unknown")} at {row.get("facility_id", "Unknown")}",
+                    "message": "Anomaly: {} at {}".format(
+                        row.get("commodity", "Unknown"),
+                        row.get("facility_id", "Unknown"),
+                    ),
                     "location": row.get("hub_region", "Unknown Hub"),
                     "timestamp": pd.Timestamp.now().strftime("%Y-%m-%d %H:%M"),
                     "status": "active",

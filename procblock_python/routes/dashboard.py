@@ -13,8 +13,8 @@ dashboard_bp = Blueprint("dashboard", __name__, url_prefix="/api/dashboard")
 
 
 def _get_db() -> Session:
-    from app import SessionLocal
-    return SessionLocal()
+    from app import get_db
+    return get_db()
 
 
 @dashboard_bp.get("/summary")

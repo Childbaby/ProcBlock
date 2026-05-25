@@ -74,10 +74,11 @@ def compute_payload_hash(payload: dict) -> str:
 
 # ── Quick smoke test ──────────────────────────────────────────────────────────
 if __name__ == "__main__":
-    os.environ.setdefault(
-        "VAULT_MASTER_KEY",
-        "38cb3e9c1daf14f3696cfd327da59b7336ec75533c3218fd7506302c4a706795"
-    )
+    if "VAULT_MASTER_KEY" not in os.environ:
+        raise SystemExit(
+            "Set VAULT_MASTER_KEY before running the smoke test.\n"
+            "Generate one with: python -c \"import secrets; print(secrets.token_hex(32))\""
+        )
     sample = "Amoxicillin 500mg — 1200 tablets — EXP 2026-12"
     enc = encrypt_field(sample)
     dec = decrypt_field(enc)

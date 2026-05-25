@@ -12,7 +12,7 @@ Usage:
 
 import os
 import logging
-from flask import Flask, jsonify
+from flask import Flask, jsonify, g, request
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 
@@ -48,6 +48,20 @@ app.register_blueprint(shipments_bp)
 app.register_blueprint(analyst_bp)
 app.register_blueprint(anomalies_bp)
 
+# ── Request-scoped DB session ─────────────────────────────────────────────────────
+def get_db() -> Session:
+    """Return the per-request SQLAlchemy session, creating it on first call."""
+    if "db" not in g:
+        g.db = SessionLocal()
+    return g.db
+
+
+@app.teardown_appcontext
+def close_db(exc: BaseException | None = None) -> None:
+    """Close the DB session at the end of every request/app-context."""
+    db: Session | None = g.pop("db", None)
+    if db is not None:
+        db.close()
 
 # ── Health check ──────────────────────────────────────────────────────────────
 @app.get("/api/healthz")
@@ -55,12 +69,18 @@ def healthz():
     return jsonify({"status": "ok", "service": "ProcBlock_AI Python API"})
 
 
-# ── CORS (dev) ────────────────────────────────────────────────────────────────
+# ── CORS (allowlist from env var) ──────────────────────────────────────────────────
+_ALLOWED_ORIGINS: set[str] = set(
+    os.environ.get("CORS_ALLOWED_ORIGINS", "http://localhost:3000").split(",")
+)
+
 @app.after_request
 def add_cors(response):
-    response.headers["Access-Control-Allow-Origin"]  = "*"
-    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
-    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PATCH, DELETE, OPTIONS"
+    origin = request.headers.get("Origin", "")
+    if origin in _ALLOWED_ORIGINS:
+        response.headers["Access-Control-Allow-Origin"]  = origin
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, PATCH, DELETE, OPTIONS"
     return response
 
 

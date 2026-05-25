@@ -29,8 +29,8 @@ Always be precise, cite specific numbers from the data provided, and flag high-r
 
 
 def _get_db() -> Session:
-    from app import SessionLocal
-    return SessionLocal()
+    from app import get_db
+    return get_db()
 
 
 def _build_context(db: Session) -> str:

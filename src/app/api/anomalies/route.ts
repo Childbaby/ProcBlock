@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 
-const AI_SERVICE_URL = process.env.AI_SERVICE_URL || 'http://localhost:8000'
+// Django runs on 8000; ai-service defaults to 8001 to avoid the conflict.
+const AI_SERVICE_URL = process.env.AI_SERVICE_URL || 'http://localhost:8001'
 
 export async function GET() {
   try {

@@ -263,7 +263,14 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <GeospatialMapperPanel hubs={hubs} isLoading={isLoading} />
-        <AnomalyDetectorPanel anomalies={anomalies} isLoading={isLoading} onResolve={(id) => console.log('Resolve:', id)} onInvestigate={(id) => console.log('Investigate:', id)} />
+        <AnomalyDetectorPanel
+          anomalies={anomalies}
+          isLoading={isLoading}
+          onResolve={(id) => setAnomalies((prev) => prev.filter((a) => a.id !== id))}
+          onInvestigate={(id) => setAnomalies((prev) =>
+            prev.map((a) => a.id === id ? { ...a, status: 'investigating' as const } : a)
+          )}
+        />
       </div>
 
       <ShipmentTrackerPanel shipments={shipments} isLoading={false} />
