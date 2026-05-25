@@ -1,0 +1,16 @@
+facility_id,hub_region,commodity,intake_timestamp,dispensation_timestamp,quantity
+FAC-001,Lusaka,Amoxicillin 250mg,2026-05-07 08:00:00,2026-05-07 14:30:00,500
+FAC-002,Copperbelt,Amoxicillin 250mg,2026-05-07 09:15:00,2026-05-07 16:45:00,300
+FAC-003,Southern,Insulin Pens,2026-05-07 07:30:00,2026-05-08 09:00:00,150
+FAC-004,Eastern,PPE Kits,2026-05-07 10:00:00,2026-05-07 12:00:00,1000
+FAC-005,North-Western,Vaccine Vials,2026-05-07 08:45:00,2026-05-07 20:00:00,200
+FAC-001,Lusaka,Surgical Gloves,2026-05-07 11:00:00,2026-05-07 15:00:00,800
+FAC-006,Luapula,Amoxicillin 250mg,2026-05-07 03:00:00,2026-05-08 11:00:00,50
+FAC-002,Copperbelt,Vaccine Vials,2026-05-07 23:30:00,2026-05-08 02:00:00,75
+FAC-007,Western,Insulin Pens,2026-05-07 14:00:00,2026-05-08 08:00:00,100
+FAC-003,Southern,PPE Kits,2026-05-07 06:00:00,2026-05-07 18:00:00,600
+FAC-004,Eastern,Amoxicillin 250mg,2026-05-07 12:00:00,2026-05-07 16:00:00,400
+FAC-001,Lusaka,Insulin Pens,2026-05-07 09:00:00,2026-05-07 13:00:00,250
+FAC-005,North-Western,Surgical Gloves,2026-05-07 10:30:00,2026-05-07 14:30:00,350
+FAC-002,Copperbelt,PPE Kits,2026-05-07 02:00:00,2026-05-07 22:00:00,200
+FAC-006,Luapula,Vaccine Vials,2026-05-07 18:00:00,2026-05-08 06:00:00,90
