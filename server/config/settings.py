@@ -9,9 +9,16 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ── Security ─────────────────────────────────────────────────────────────────
-SECRET_KEY = os.environ["SECRET_KEY"]
 DEBUG = os.environ.get("DEBUG", "False") == "True"
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+if DEBUG:
+    SECRET_KEY = os.environ.get("SECRET_KEY", "unsafe-development-secret")
+    ALLOWED_HOSTS = os.environ.get(
+        "ALLOWED_HOSTS",
+        "localhost,127.0.0.1,0.0.0.0",
+    ).split(",")
+else:
+    SECRET_KEY = os.environ["SECRET_KEY"]
+    ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 # ── Application registry ─────────────────────────────────────────────────────
 JAZZMIN_SETTINGS = {
@@ -85,7 +92,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": os.environ.get("DB_NAME", "procbase"),
         "USER": os.environ.get("DB_USER", "postgres"),
-        "PASSWORD": os.environ["DB_PASSWORD"],
+        "PASSWORD": os.environ.get("DB_PASSWORD", ""),
         "HOST": os.environ.get("DB_HOST", "db"),
         "PORT": os.environ.get("DB_PORT", "5432"),
         "OPTIONS": {"connect_timeout": 10},
