@@ -1,25 +1,23 @@
 import type { Metadata } from 'next'
+import { SolanaWalletProvider } from '@/components/WalletProvider'
 import { HeaderWrapper } from '@/components/HeaderWrapper'
 import './globals.css'
 
 export const metadata: Metadata = {
   title: 'ProcBlock | ZAMMSA Medical Supply Portal',
-  description: 'Decentralized medical logistics system for the Zambia Medicines and Medical Supplies Agency',
-  icons: {
-    icon: '/favicon.ico',
-  },
+  description: 'Decentralized medical logistics system on Solana',
+  manifest: '/manifest.json',
+  icons: { icon: '/favicon.ico' },
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className="min-h-screen flex flex-col">
-        <HeaderWrapper />
-        <main className="flex-1">{children}</main>
+        <SolanaWalletProvider>
+          <HeaderWrapper />
+          <main className="flex-1">{children}</main>
+        </SolanaWalletProvider>
       </body>
     </html>
   )
