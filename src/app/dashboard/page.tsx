@@ -6,269 +6,104 @@ import { GeospatialMapperPanel } from '@/components/GeospatialMapperPanel'
 import { AnomalyDetectorPanel } from '@/components/AnomalyDetectorPanel'
 import { ShipmentTrackerPanel } from '@/components/ShipmentTrackerPanel'
 import { CNFTCustodyPanel } from '@/components/CNFTCustodyPanel'
-import { fetchAnomalies, fetchGeospatialData, type Anomaly, type HubNode } from '@/lib/ai-client'
-
-interface Shipment {
-  id: string
-  commodity: string
-  from: string
-  to: string
-  quantity: number
-  dispatchedAt: string
-  estimatedDelivery: string
-  deliveredAt?: string
-  status: 'pending' | 'in_transit' | 'delivered' | 'delayed'
-  custodian?: string
-  ledgerEntry?: string
-}
-
-interface CustodyEvent {
-  timestamp: string
-  from: string
-  to: string
-  location: string
-  transactionHash: string
-  verified: boolean
-}
-
-interface CNFTAsset {
-  id: string
-  cnfId: string
-  commodity: string
-  lotNumber: string
-  manufacturer: string
-  expiryDate: string
-  mintedAt: string
-  currentCustodian: string
-  currentLocation: string
-  status: 'active' | 'quarantined' | 'expired' | 'consumed'
-  custodyChain: CustodyEvent[]
-}
+import { ActivityFeed } from '@/components/ActivityFeed'
+import { useBlockchainAuth } from '@/lib/use-blockchain-auth'
+import { fetchAnomalies, fetchGeospatialData } from '@/lib/ai-client'
+import type { Anomaly, HubNode } from '@/lib/ai-client'
 
 export default function DashboardPage() {
+  const { anonymousId } = useBlockchainAuth()
   const [hubs, setHubs] = useState<HubNode[]>([])
   const [anomalies, setAnomalies] = useState<Anomaly[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
 
-  const [shipments] = useState<Shipment[]>([
+  const [shipments] = useState([
     {
       id: 'ZAM-2847', commodity: 'Amoxicillin 250mg Capsules', from: 'Lusaka Central Hub',
-      to: 'Kitwe District Hub', quantity: 5000, dispatchedAt: '2026-05-07 08:00',
-      estimatedDelivery: '2026-05-07 16:00', deliveredAt: '2026-05-07 15:42',
-      status: 'delivered', custodian: 'Dr. Mwansa', ledgerEntry: '0x8f3a...7b2d',
+      to: 'Kitwe District Hub', quantity: 5000, dispatchedAt: '2026-07-01 08:00',
+      estimatedDelivery: '2026-07-01 16:00', deliveredAt: '2026-07-01 15:42',
+      status: 'delivered' as const, custodian: 'Dr. Mwansa', ledgerEntry: '0x8f3a...7b2d',
+      coldChain: { status: 'normal' as const, temperature: 4.2 }
     },
     {
       id: 'ZAM-2848', commodity: 'Insulin Pens (Cold Chain)', from: 'Lusaka Central Hub',
-      to: 'Chipata Hub', quantity: 1200, dispatchedAt: '2026-05-07 09:30',
-      estimatedDelivery: '2026-05-07 18:00', status: 'in_transit',
+      to: 'Chipata Hub', quantity: 1200, dispatchedAt: '2026-07-01 09:30',
+      estimatedDelivery: '2026-07-01 18:00', status: 'in_transit' as const,
+      coldChain: { status: 'warning' as const, temperature: 8.5, maxTemp: 12.0 }
     },
     {
       id: 'ZAM-2849', commodity: 'Surgical Gloves', from: 'Kitwe District Hub',
-      to: 'Solwezi Hub', quantity: 8000, dispatchedAt: '2026-05-07 10:00',
-      estimatedDelivery: '2026-05-07 14:00', status: 'delayed',
+      to: 'Solwezi Hub', quantity: 8000, dispatchedAt: '2026-07-01 10:00',
+      estimatedDelivery: '2026-07-01 14:00', status: 'delayed' as const,
     },
     {
-      id: 'ZAM-2850', commodity: 'PPE Kits', from: 'Lusaka Central Hub',
-      to: 'Livingstone Hub', quantity: 3000, dispatchedAt: '2026-05-07 11:00',
-      estimatedDelivery: '2026-05-08 09:00', status: 'pending',
+      id: 'ZAM-2850', commodity: 'Vaccine Vials (Cold Chain)', from: 'Lusaka Central Hub',
+      to: 'Livingstone Hub', quantity: 3000, dispatchedAt: '2026-07-01 11:00',
+      estimatedDelivery: '2026-07-02 09:00', status: 'pending' as const,
+      coldChain: { status: 'normal' as const, temperature: 2.0 }
     },
     {
       id: 'ZAM-2851', commodity: 'Vaccine Vials (Cold Chain)', from: 'Chipata Hub',
-      to: 'Lundazi Clinic', quantity: 500, dispatchedAt: '2026-05-07 07:00',
-      estimatedDelivery: '2026-05-07 12:00', deliveredAt: '2026-05-07 11:30',
-      status: 'delivered', custodian: 'Nurse Banda', ledgerEntry: '0xa4b2...9c1e',
+      to: 'Lundazi Clinic', quantity: 500, dispatchedAt: '2026-07-01 07:00',
+      estimatedDelivery: '2026-07-01 12:00', deliveredAt: '2026-07-01 11:30',
+      status: 'delivered' as const, custodian: 'Nurse Banda', ledgerEntry: '0xa4b2...9c1e',
+      coldChain: { status: 'compromised' as const, temperature: 18.5, maxTemp: 25.0 }
     },
     {
       id: 'ZAM-2852', commodity: 'Amoxicillin 250mg Capsules', from: 'Lusaka Central Hub',
-      to: 'Mansa Hub', quantity: 2500, dispatchedAt: '2026-05-07 06:00',
-      estimatedDelivery: '2026-05-07 20:00', status: 'in_transit',
+      to: 'Mansa Hub', quantity: 2500, dispatchedAt: '2026-07-01 06:00',
+      estimatedDelivery: '2026-07-01 20:00', status: 'in_transit' as const,
     },
     {
       id: 'ZAM-2853', commodity: 'Malaria Rapid Test Kits', from: 'Livingstone Hub',
-      to: 'Mongu Hub', quantity: 10000, dispatchedAt: '2026-05-07 08:30',
-      estimatedDelivery: '2026-05-08 10:00', status: 'pending',
+      to: 'Mongu Hub', quantity: 10000, dispatchedAt: '2026-07-01 08:30',
+      estimatedDelivery: '2026-07-02 10:00', status: 'pending' as const,
     },
   ])
 
-  // Mock cNFT assets
-  const [cnftAssets] = useState<CNFTAsset[]>([
-    {
-      id: 'cnft-1',
-      cnfId: 'cNFT-ZAM-AMX-0847',
-      commodity: 'Amoxicillin 250mg Capsules',
-      lotNumber: 'LOT-AMX-2024-0847',
-      manufacturer: 'Zambia Pharma Ltd.',
-      expiryDate: '2026-03-15',
-      mintedAt: '2026-05-07 08:00',
-      currentCustodian: 'Kitwe District Hub',
-      currentLocation: 'Kitwe, Copperbelt Province',
-      status: 'active',
-      custodyChain: [
-        {
-          timestamp: '2026-05-07 08:00',
-          from: 'Manufacturer',
-          to: 'Lusaka Central Hub',
-          location: 'Lusaka',
-          transactionHash: '0x7a1b...3c4d',
-          verified: true,
-        },
-        {
-          timestamp: '2026-05-07 12:30',
-          from: 'Lusaka Central Hub',
-          to: 'Kitwe District Hub',
-          location: 'Kitwe, Copperbelt',
-          transactionHash: '0x8f3a...7b2d',
-          verified: true,
-        },
-      ],
-    },
-    {
-      id: 'cnft-2',
-      cnfId: 'cNFT-ZAM-INS-0192',
-      commodity: 'Insulin Pens (Cold Chain)',
-      lotNumber: 'LOT-INS-2024-0192',
-      manufacturer: 'Novo Nordisk SA',
-      expiryDate: '2025-11-20',
-      mintedAt: '2026-05-07 09:00',
-      currentCustodian: 'Chipata Hub',
-      currentLocation: 'Chipata, Eastern Province',
-      status: 'active',
-      custodyChain: [
-        {
-          timestamp: '2026-05-07 09:00',
-          from: 'Manufacturer',
-          to: 'Lusaka Central Hub',
-          location: 'Lusaka',
-          transactionHash: '0x2e5f...8a1c',
-          verified: true,
-        },
-        {
-          timestamp: '2026-05-07 13:00',
-          from: 'Lusaka Central Hub',
-          to: 'Chipata Hub',
-          location: 'Chipata, Eastern',
-          transactionHash: '0x9b4d...2f6e',
-          verified: false,
-        },
-      ],
-    },
-    {
-      id: 'cnft-3',
-      cnfId: 'cNFT-ZAM-VAX-0045',
-      commodity: 'Vaccine Vials (Cold Chain)',
-      lotNumber: 'LOT-VAX-2024-0045',
-      manufacturer: 'BioNTech Manufacturing GmbH',
-      expiryDate: '2025-08-10',
-      mintedAt: '2026-05-07 07:00',
-      currentCustodian: 'Lundazi Clinic',
-      currentLocation: 'Lundazi, Eastern Province',
-      status: 'consumed',
-      custodyChain: [
-        {
-          timestamp: '2026-05-07 07:00',
-          from: 'Manufacturer',
-          to: 'Lusaka Central Hub',
-          location: 'Lusaka',
-          transactionHash: '0x3d7a...1b9f',
-          verified: true,
-        },
-        {
-          timestamp: '2026-05-07 09:00',
-          from: 'Lusaka Central Hub',
-          to: 'Chipata Hub',
-          location: 'Chipata, Eastern',
-          transactionHash: '0x5c8e...4a2d',
-          verified: true,
-        },
-        {
-          timestamp: '2026-05-07 11:30',
-          from: 'Chipata Hub',
-          to: 'Lundazi Clinic',
-          location: 'Lundazi, Eastern',
-          transactionHash: '0xa4b2...9c1e',
-          verified: true,
-        },
-      ],
-    },
-    {
-      id: 'cnft-4',
-      cnfId: 'cNFT-ZAM-PPE-0621',
-      commodity: 'PPE Kits',
-      lotNumber: 'LOT-PPE-2024-0621',
-      manufacturer: 'MediSupply Zambia',
-      expiryDate: '2027-01-30',
-      mintedAt: '2026-05-07 10:00',
-      currentCustodian: 'Lusaka Central Hub',
-      currentLocation: 'Lusaka',
-      status: 'quarantined',
-      custodyChain: [
-        {
-          timestamp: '2026-05-07 10:00',
-          from: 'Manufacturer',
-          to: 'Lusaka Central Hub',
-          location: 'Lusaka',
-          transactionHash: '0x6f1c...0d3a',
-          verified: true,
-        },
-      ],
-    },
-  ])
+  const activities = [
+    { id: 'act-1', type: 'minted' as const, description: 'New cNFT minted for Amoxicillin 250mg — Lot: LOT-AMX-2024-0847', actor: anonymousId || '8xK9...3mW2', timestamp: '2026-07-01 08:00', transactionHash: '5xHn9kLm3pQr7sT2vW4xY6zA8bC0dE1f' },
+    { id: 'act-2', type: 'transferred' as const, description: 'Custody transferred: Lusaka Central Hub → Kitwe District Hub', actor: '4mN7...9pL3', timestamp: '2026-07-01 12:30', transactionHash: '3xJ8iK2lM4nO6pQ8rS0tU2vW4xY6zA8b' },
+    { id: 'act-3', type: 'alerted' as const, description: '🚨 Cold chain broken: Vaccine Vials at Lundazi Clinic — temp reached 25°C', actor: 'AI-Monitor', timestamp: '2026-07-01 11:45' },
+    { id: 'act-4', type: 'verified' as const, description: 'Public verification: cNFT-ZAM-AMX-0847 confirmed authentic', actor: '2kL5...7nM1', timestamp: '2026-07-01 14:15', transactionHash: '7xP2qR4sT6uV8wX0yZ2aB4cD6eF8gH0i' },
+    { id: 'act-5', type: 'alerted' as const, description: '⚠️ Temperature deviation: Insulin Pens at Chipata Hub — 8.5°C (max: 12°C)', actor: 'AI-Monitor', timestamp: '2026-07-01 15:00' },
+  ]
 
   useEffect(() => {
     async function loadData() {
       try {
-        const [anomalyData, geospatialData] = await Promise.all([
-          fetchAnomalies(),
-          fetchGeospatialData(),
-        ])
+        const [anomalyData, geospatialData] = await Promise.all([fetchAnomalies(), fetchGeospatialData()])
         setAnomalies(anomalyData.anomalies)
         setHubs(geospatialData.hubs)
-      } catch (err) {
-        console.error('Failed to load AI data:', err)
-        setError('AI Insight Module is currently unavailable. Displaying fallback data.')
-      } finally {
-        setIsLoading(false)
-      }
+      } catch (err) { console.error('Failed to load AI data:', err) }
+      finally { setIsLoading(false) }
     }
     loadData()
   }, [])
 
-  const pendingCount = shipments.filter(s => s.status === 'pending').length
-  const inTransitCount = shipments.filter(s => s.status === 'in_transit').length
-  const deliveredCount = shipments.filter(s => s.status === 'delivered').length
-  const delayedCount = shipments.filter(s => s.status === 'delayed').length
-
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 px-4 pb-12">
       <div>
         <h1 className="text-display-md text-navy-800">Dashboard Overview</h1>
         <p className="text-sm text-navy-500 mt-1">
-          Real-time medical supply chain monitoring · AI-Powered Analytics
+          Real-time monitoring · Offline-ready · Cold chain aware · <span className="font-mono text-teal-medical">{anonymousId || 'Not connected'}</span>
         </p>
       </div>
 
-      {error && (
-        <div className="p-4 bg-amber-50 border border-amber-200 rounded-medical text-sm text-amber-700">
-          {error}
-        </div>
-      )}
-
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <DashboardCard title="Pending Shipments" value={pendingCount} status="warning" subtitle="Awaiting dispatch" />
-        <DashboardCard title="In Transit" value={inTransitCount} status="info" subtitle="En route to facilities" />
-        <DashboardCard title="Delivered Today" value={deliveredCount} status="verified" subtitle="Confirmed on ledger" />
-        <DashboardCard title="Delayed" value={delayedCount} status={delayedCount > 0 ? 'critical' : 'verified'} subtitle={delayedCount > 0 ? 'Requires attention' : 'No delays'} />
+        <DashboardCard title="Pending" value="2" status="warning" subtitle="Awaiting dispatch" />
+        <DashboardCard title="In Transit" value="2" status="info" subtitle="En route" />
+        <DashboardCard title="Delivered" value="2" status="verified" subtitle="On-chain confirmed" />
+        <DashboardCard title="Cold Chain Alerts" value="2" status="critical" subtitle="1 broken · 1 warning" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <GeospatialMapperPanel hubs={hubs} isLoading={isLoading} />
-        <AnomalyDetectorPanel anomalies={anomalies} isLoading={isLoading} onResolve={(id) => console.log('Resolve:', id)} onInvestigate={(id) => console.log('Investigate:', id)} />
+        <AnomalyDetectorPanel anomalies={anomalies} isLoading={isLoading} />
       </div>
 
       <ShipmentTrackerPanel shipments={shipments} isLoading={false} />
-
-      <CNFTCustodyPanel assets={cnftAssets} isLoading={false} />
+      <ActivityFeed activities={activities} />
     </div>
   )
 }

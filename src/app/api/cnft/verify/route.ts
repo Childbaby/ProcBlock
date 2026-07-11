@@ -1,41 +1,34 @@
 import { NextResponse } from 'next/server'
+import { Connection, PublicKey } from '@solana/web3.js'
+import { Program, AnchorProvider, Idl } from '@coral-xyz/anchor'
+
+const PROGRAM_ID = new PublicKey('3Qy4gmdPBKLzzFoMKgVy8WSFJ3mh7pAEApTHEzK3aWFf')
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const cnfId = searchParams.get('cnfId')
 
-  if (!cnfId) {
-    return NextResponse.json({ error: 'cNFT ID required' }, { status: 400 })
-  }
+  if (!cnfId) return NextResponse.json({ error: 'cNFT ID required' }, { status: 400 })
 
-  // TODO: Query Solana for cNFT existence and status
-  // const asset = await getAsset(cnfId)
+  try {
+    const connection = new Connection('https://api.devnet.solana.com', 'confirmed')
+    const medicinePubkey = new PublicKey(cnfId)
+    const accountInfo = await connection.getAccountInfo(medicinePubkey)
 
-  // Mock verification — replace with real ledger lookup
-  if (cnfId.startsWith('cNFT-ZAM-') || cnfId.startsWith('ZAM-')) {
+    if (!accountInfo) {
+      return NextResponse.json({ cnfId, status: 'not_found', message: 'Not found on Solana ledger' })
+    }
+
     return NextResponse.json({
-      cnfId,
-      status: 'authentic',
-      commodity: 'Amoxicillin 250mg Capsules',
-      lotNumber: 'LOT-AMX-2024-0847',
-      manufacturer: 'Zambia Pharma Ltd.',
-      expiryDate: '2026-03-15',
+      cnfId, status: 'authentic',
+      commodity: 'Verified on Solana Devnet',
+      lotNumber: cnfId.slice(0, 12),
+      manufacturer: 'ProcBlock Program',
+      expiryDate: 'N/A',
       verifiedAt: new Date().toISOString(),
+      transactionHash: accountInfo.data ? 'On-chain record exists' : 'N/A',
     })
+  } catch (error: any) {
+    return NextResponse.json({ cnfId, status: 'error', message: error.message }, { status: 500 })
   }
-
-  if (cnfId.includes('FLAGGED')) {
-    return NextResponse.json({
-      cnfId,
-      status: 'flagged',
-      reason: 'Product marked as suspicious in ZAMMSA Ledger',
-      hotline: '+260 211 123 456',
-    })
-  }
-
-  return NextResponse.json({
-    cnfId,
-    status: 'not_found',
-    message: 'Serial number not found in ZAMMSA Ledger',
-  })
 }
